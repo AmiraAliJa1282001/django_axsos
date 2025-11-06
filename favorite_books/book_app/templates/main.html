@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorite Books </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3> Welcome {{logged_user.first_name}}</h3>
+            <a href="{% url 'user:logout' %}" class="link-opacity-100">Logout</a>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4 text-center">Add a Favorite Books</h3>
+                        <form action="{% url 'book:add_book' %}" method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Title</label>
+                                <input class="form-control" type="text" id="title" name="title" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="desc" class="form-label">Description</label>
+                                <textarea class="form-control" id="desc" name="desc" rows="3"> </textarea>
+                            </div>
+                            <div>
+                                <input type="submit" class="btn btn-success" value="Add"></input>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h1>All Books</h1>
+                {% for book in all_books %}
+                <!-- single user 1 to many -->
+                {% if logged_user == book.uploaded_by %}
+                <a href="{% url 'book:edit_book' book.id %}">{{book.title}}</a>
+                {% else %}
+                <a href="{% url 'book:view_book' book.id %}">{{book.title}}</a>
+                {% endif%}
+                <h5> added by {{book.uploaded_by.first_name}}</h5>
+                {% if logged_user in book.users_who_like.all %}
+                <p>this is one of your favorite</p>
+                {% else %}
+                <div><a href="{% url 'book:add_favorite' book.id %}">Add to Favorite</a></div>
+                {% endif%}
+                {% endfor%}
+            </div>
+        </div>
+        <div class="container mt-5">
+            <h5>All Favorite Book For me</h5>
+            <ul>
+                {% for book in logged_user.liked_books.all %}
+                <li> {{ book.title }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Messages -->
+        <ul class="container py-5 text-center">
+            {% if messages %}
+            {% for m in messages %}
+            {% if m.tags == 'error' %}
+            <div class="alert alert-danger">
+                {% else %}
+                <div class="alert alert-success">
+                    {% endif %}
+                    {{ m }}
+                </div>
+                {% endfor %}
+                {% endif %}
+        </ul>
+    </div>
+    <script>
+        setTimeout(function () {
+            document.querySelectorAll(".alert").forEach(function (alert) {
+                alert.classList.add("fade");
+                alert.classList.remove("show");
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 3000);
+    </script>
+</body>
+
+</html>

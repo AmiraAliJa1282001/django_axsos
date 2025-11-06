@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Book</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3> Welcome {{logged_user.first_name}}</h3>
+            <a href="{% url 'user:logout' %}" class="link-opacity-100">Logout</a>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <form action="{% url 'book:update_book' book.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input class="form-control" type="text" id="title" name="title" value="{{book.title}}" />
+                    </div>
+                    <p>Added by :{{book.uploaded_by.first_name}} {{book.uploaded_by.Last_name}}</p>
+                    <p>Added on :{{book.created_at}}</p>
+                    <p>Last updated on :{{book.updated_at}}</p>
+                    <div class="mb-3">
+                        <label for="desc" class="form-label">Description</label>
+                        <textarea class="form-control" id="desc" name="desc" rows="3"> {{book.desc}}</textarea>
+                    </div>
+                    <div>
+                        <input type="submit" class="btn btn-success" value="Edit"></input>
+                        <a href="{% url 'book:delete_book' book.id %}" class="btn btn-danger">Delete</a>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <h4>User Who like This Book</h4>
+                <ul>
+                    {% for user in liked_user %}
+                    <div>
+                        <h5 style="display: inline;"> {{ user.first_name }} {{ user.last_name }} </h5>
+                        {% if logged_user == user %}
+                        <a href="{% url 'book:un_favorite' book.id  %}"> un favorite</a>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+    </div>
+</body>
+    <script>
+        setTimeout(function () {
+            document.querySelectorAll(".alert").forEach(function (alert) {
+                alert.classList.add("fade");
+                alert.classList.remove("show");
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 3000);
+    </script>
+</html>
