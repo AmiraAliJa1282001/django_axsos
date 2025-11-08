@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ninja Gold</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #f6f8fa, #e9ecef);
+      min-height: 100vh;
+      font-family: "Poppins", sans-serif;
+    }
+
+    .gold-counter {
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 40px;
+    }
+
+    .building-card {
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .building-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .building-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+
+    .building-card input[type="submit"] {
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .building-card input[type="submit"]:hover {
+      background-color: #0b5ed7;
+    }
+
+    .activities {
+      margin-top: 40px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    .activities h3 {
+      margin-bottom: 20px;
+    }
+
+    .reset-btn {
+      display: block;
+      margin: 20px auto;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container py-5">
+    <div class="gold-counter text-center">
+      <h1 class="fw-bold">💰 Your Gold: <span class="text-warning">{{ gold }}</span></h1>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="building-card text-center p-4">
+          <h2>🏡 Farm</h2>
+          <form action="/process_money" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="building" value="farm">
+            <input type="submit" value="Find Gold!">
+          </form>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="building-card text-center p-4">
+          <h2>⛏️ Cave</h2>
+          <form action="/process_money" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="building" value="cave">
+            <input type="submit" value="Find Gold!">
+          </form>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="building-card text-center p-4">
+          <h2>🏠 House</h2>
+          <form action="/process_money" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="building" value="house">
+            <input type="submit" value="Find Gold!">
+          </form>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="building-card text-center p-4">
+          <h2>🎰 Casino</h2>
+          <form action="/process_money" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="building" value="casino">
+            <input type="submit" value="Find Gold!">
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <a href="/reset" class="btn btn-warning reset-btn">🔁 Reset Game</a>
+
+    <div class="activities">
+      <h3>Recent Activities</h3>
+      <ul class="list-group">
+        {% for activity in activities %}
+        <li class="list-group-item {% if activity.color == 'green' %}text-success{% else %}text-danger{% endif %}">
+          {{ activity.message }}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
